@@ -36,5 +36,14 @@ router.post("/login", async function (req, res) {
   }
   res.send({ success: true, error: "user found and login successful" });
 });
+router.get("/:userid", async function (req, res) {
+  const userid = req.params.userid;
+  const userfound = await usermodel.findOne({ userid: userid });
+  if (!userfound) {
+    res.send({ success: false, error: "user not found" });
+    return;
+  }
+  res.send({ success: true, userData: userfound });
+});
 
 module.exports = router;
