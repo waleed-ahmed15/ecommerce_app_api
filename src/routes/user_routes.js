@@ -21,5 +21,20 @@ router.post("/createaccount", async function (req, res) {
     }
   });
 });
+router.post("/login", async function (req, res) {
+  const email = req.body.email;
+  const password = req.body.password;
+  const founduser = await usermodel.findOne({ email: email });
+  if (!founduser) {
+    res.send({ success: false, error: "user not found" });
+    return;
+  }
+  const correctpassword = await bcrpyt.compare(founduser.password, password);
+  if (!correctpassword) {
+    res.send({ success: false, error: "incorrect password" });
+    return;
+  }
+  res.send({ success: true, error: "user found and login successful" });
+});
 
 module.exports = router;
