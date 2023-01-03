@@ -5,6 +5,8 @@ const port = 3003;
 const bodyparser = require("body-parser");
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: false }));
+app.use(express.static("uploads"));
+
 mongoose
   .connect("mongodb://localhost:27017/ecommerce_app", {
     useUnifiedTopology: true,
@@ -25,6 +27,9 @@ mongoose
 
     const categoryRoutes = require("./routes/category_routes");
     app.use("/api/category", categoryRoutes);
+
+    const fileRoutes = require("./routes/file_routes");
+    app.use("/api/fileupload", fileRoutes);
   });
 
 app.listen(port, function () {
