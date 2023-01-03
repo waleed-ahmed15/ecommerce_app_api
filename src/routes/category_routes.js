@@ -39,4 +39,18 @@ router.get("/", async function (req, res) {
   });
 });
 
+// update category route
+router.put("/", async function (req, res) {
+  const categoryData = req.body;
+  const result = await categoryModel.findOneAndUpdate(
+    { categoryid: categoryData.categoryid },
+    categoryData
+  );
+  if (!result) {
+    res.json({ success: false, error: "no such category found" });
+  } else {
+    res.json({ success: true, messaage: "category updated successfully" });
+  }
+});
+
 module.exports = router;
