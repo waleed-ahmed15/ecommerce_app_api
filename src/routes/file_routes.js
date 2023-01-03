@@ -14,5 +14,19 @@ router.post("/single", upload.single("image"), async function (req, res) {
     });
   }
 });
+//multiple files upload route.
+router.post("/multiple", upload.array("images"), async function (req, res) {
+  const multipleFiles = req.files;
+  if (multipleFiles.length == 0 || !multipleFiles) {
+    res.json({ success: false, error: "no files uploaded" });
+    return;
+  }
+  const filesURLs = [];
+  multipleFiles.forEach(function (uploadedfile) {
+    const fileURL = "http://localhost:3003/" + uploadedfile.filename;
+    filesURLs.push(fileURL);
+  });
+  res.json({ success: true, urls: filesURLs });
+});
 
 module.exports = router;
