@@ -13,13 +13,18 @@ mongoose
   })
   .then(() => {
     console.log("Connected to database!");
-    
+
     app.get("/", (req, res) => {
       res.send("Hello World!");
     });
 
     const userRoutes = require("./routes/user_routes");
     app.use("/api/user", userRoutes);
+    const productRoutes = require("./routes/product_routes");
+    app.use("/api/product", productRoutes);
+
+    const categoryRoutes = require("./routes/category_routes");
+    app.use("/api/category", categoryRoutes);
   });
 
 app.listen(port, function () {
