@@ -46,4 +46,19 @@ router.get("/:userid", async function (req, res) {
   res.send({ success: true, userData: userfound });
 });
 
+// update user route
+
+router.put("/", async function (req, res) {
+  const userData = req.body;
+  const result = await usermodel.findOneAndUpdate(
+    { userid: userData.userid },
+    userData
+  );
+  if (!result) {
+    res.json({ success: false, error: "no such user found" });
+  } else {
+    res.json({ success: true, messaage: "user updated successfully" });
+  }
+});
+
 module.exports = router;

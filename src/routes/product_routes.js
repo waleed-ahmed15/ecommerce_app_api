@@ -39,4 +39,6 @@ router.delete("/", async function (req, res) {
     res.json({ success: true, product: result });
   }
 });
+
+
 module.exports = router;
