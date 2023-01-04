@@ -1,9 +1,23 @@
 const router = require("express").Router();
 const productModel = require("../models/product_model");
-const productmodel = require("../models/product_model");
+const productStyleModel = require("../models/product_styles_model");
+
+//add product route
 router.post("/", async function (req, res) {
   const productData = req.body;
-  const newproduct = new productmodel(productData);
+  const stylesid = [];
+  productData.styles.forEach(async function (style) {
+    const newstyle = new productStyleModel(style);
+    newstyle.save(function (err) {
+      if (err) {
+        res.json({ success: false, error: err, message: "style error" });
+        return;
+      }
+    });
+    stylesid.push(newstyle._id);
+  });
+  productData.styles = stylesid;
+  const newproduct = new productModel(productData);
   newproduct.save(function (err) {
     if (err) {
       res.send({ success: false, error: err });
@@ -16,7 +30,7 @@ router.post("/", async function (req, res) {
 // get all products;
 
 router.get("/", async function (req, res) {
-  await productmodel
+  await productModel
     .find()
     .populate("category")
     .exec(function (error, products) {
@@ -40,18 +54,18 @@ router.delete("/", async function (req, res) {
   }
 });
 
-// update product route 
+// update product route
 router.put("/", async function (req, res) {
-    const productData = req.body;
-    const result = await productModel.findOneAndUpdate(
-      { productid: productData.productid },
-      productData
-    );
-    if (!result) {
-      res.json({ success: false, error: "no such product found" });
-    } else {
-      res.json({ success: true, messaage: "product updated successfully" });
-    }
-  });
-  
+  const productData = req.body;
+  const result = await productModel.findOneAndUpdate(
+    { productid: productData.productid },
+    productData
+  );
+  if (!result) {
+    res.json({ success: false, error: "no such product found" });
+  } else {
+    res.json({ success: true, messaage: "product updated successfully" });
+  }
+});
+
 module.exports = router;

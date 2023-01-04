@@ -9,7 +9,6 @@ const ProductSchema = new Schema({
     type: [{ type: Schema.Types.ObjectId, ref: "ProductStyle" }],
     default: [],
   },
-  price: { type: Number, required: true },
   createdon: { type: Date, default: Date.now },
 });
 const productModel = model("Product", ProductSchema);

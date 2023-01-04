@@ -4,7 +4,9 @@
 const router = require("express").Router();
 const usermodel = require("../models/user_model");
 const bcrpyt = require("bcrypt");
-
+const CartModel = require("../models/cart_model");
+const CartItemModel = require("../models/cart_item_model");
+const uuid = require("uuid");
 router.post("/createaccount", async function (req, res) {
   const userData = req.body;
   const password = userData.password;
@@ -61,4 +63,43 @@ router.put("/", async function (req, res) {
   }
 });
 
+// add to cart route for user.
+
+router.post("/:userid/addtocart", async function (req, res) {
+  // cart model is required for adding to cart;
+  //we will check if cart already exist for the user or not.
+  const userid = req.params.userid;
+  const cartexist = await CartModel.findOne({ userid: userid });
+  let cartItemDetails = req.body;
+
+  if (!cartexist) {
+    const newCart = new CartModel({ userid: userid });
+    await newCart.save(function (err) {
+      if (err) {
+        res.send({ sucess: false, error: err });
+        return;
+      }
+    });
+    cartItemDetails.cartid = newCart.cartid;
+    // console.log(newCart.cartid);
+  } else {
+    cartItemDetails.cartid = cartexist.cartid;
+    // console.log(cartexist.cartid);
+  }
+  // console.log(uuid.v1());
+  // console.log(cartItemDetails.cartid);
+
+  const newcartItem = new CartItemModel(cartItemDetails);
+  await newcartItem.save(async function (err) {
+    if (err) {
+      res.send({ success: false, error: err });
+    } else {
+      await CartModel.findOneAndUpdate(
+        { cartid: newcartItem.cartid },
+        { $push: { items: newcartItem._id } }
+      );
+      res.send({ success: true, data: newcartItem });
+    }
+  });
+});
 module.exports = router;
