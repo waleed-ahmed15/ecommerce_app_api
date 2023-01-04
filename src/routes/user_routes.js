@@ -48,6 +48,17 @@ router.get("/:userid", async function (req, res) {
   res.send({ success: true, userData: userfound });
 });
 
+// view cart route==================
+router.get("/:cartid/viewcart", async function (req, res) {
+  const cartid = req.params.cartid;
+  const cartfound = await CartModel.findOne({ cartid: cartid });
+  if (!cartfound) {
+    res.send({ success: false, error: "user not found" });
+    return;
+  }
+  res.send({ success: true, userData: cartfound });
+});
+
 // update user route
 
 router.put("/", async function (req, res) {
