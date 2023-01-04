@@ -53,7 +53,7 @@ router.get("/:cartid/viewcart", async function (req, res) {
   const cartid = req.params.cartid;
   const cartfound = await CartModel.findOne({ cartid: cartid });
   if (!cartfound) {
-    res.send({ success: false, error: "user not found" });
+    res.send({ success: false, error: "cart not found" });
     return;
   }
   res.send({ success: true, userData: cartfound });
