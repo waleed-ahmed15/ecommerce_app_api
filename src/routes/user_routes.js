@@ -7,6 +7,7 @@ const bcrpyt = require("bcrypt");
 const CartModel = require("../models/cart_model");
 const CartItemModel = require("../models/cart_item_model");
 const uuid = require("uuid");
+const { populate } = require("../models/product_styles_model");
 router.post("/createaccount", async function (req, res) {
   const userData = req.body;
   const password = userData.password;
@@ -51,7 +52,17 @@ router.get("/:userid", async function (req, res) {
 // view cart route==================
 router.get("/:cartid/viewcart", async function (req, res) {
   const cartid = req.params.cartid;
-  const cartfound = await CartModel.findOne({ cartid: cartid });
+  // const cartfound = await CartModel.findOne({ cartid: cartid }).populate(
+  //   "items"
+  // );
+  const cartfound = await CartModel.findOne({ cartid: cartid }).populate({
+    path: "items",
+    populate: {
+      path: "product",
+      path: "style",
+    },
+  });
+
   if (!cartfound) {
     res.send({ success: false, error: "cart not found" });
     return;
