@@ -141,3 +141,24 @@ router.delete("/:userid/removefromcart", async function (req, res) {
   }
 });
 module.exports = router;
+
+//update product quantity in cart route
+
+router.post("/:userid/cartitemquantity", async function (req, res) {
+  //fist we will find the item by its id
+  const itemDetails = req.body;
+  const itemUpdated = await CartItemModel.findOneAndUpdate(
+    { cartitemid: itemDetails.cartitemid },
+    { quantity: itemDetails.quantity }
+  );
+  if (itemUpdated) {
+    res.status(200).json({
+      success: true,
+      message: "quantity updated successfully",
+    });
+  } else {
+    res
+      .status(404)
+      .send({ success: false, message: "failed to updated quantity" });
+  }
+});
