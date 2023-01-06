@@ -67,7 +67,7 @@ router.get("/:cartid/viewcart", async function (req, res) {
     res.send({ success: false, error: "cart not found" });
     return;
   }
-  res.send({ success: true, userData: cartfound });
+  res.send({ success: true, Data: cartfound });
 });
 
 // update user route
@@ -123,5 +123,21 @@ router.post("/:userid/addtocart", async function (req, res) {
       res.send({ success: true, data: newcartItem });
     }
   });
+});
+
+//delete from cart route
+
+router.delete("/:userid/removefromcart", async function (req, res) {
+  const userid = req.params.userid;
+  const cartItemdetails = req.body;
+  const updatedCart = await CartModel.findOneAndUpdate(
+    { userid: userid },
+    { $pull: { items: cartItemdetails.itemid } }
+  );
+  if (!updatedCart) {
+    res.send({ success: false, message: "cart not found" });
+  } else {
+    res.send({ success: true, message: "item removed" });
+  }
 });
 module.exports = router;

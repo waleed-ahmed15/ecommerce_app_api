@@ -8,13 +8,17 @@ router.post("/", async function (req, res) {
   const stylesid = [];
   productData.styles.forEach(async function (style) {
     const newstyle = new productStyleModel(style);
-    newstyle.save(function (err) {
-      if (err) {
-        res.json({ success: false, error: err, message: "style error" });
-        return;
-      }
-    });
-    stylesid.push(newstyle._id);
+    const alreadyExist = await productStyleModel.find({ styleid: style.styleid });
+    if (!alreadyExist) {
+      newstyle.save(function (err) {
+        if (err) {
+          res.json({ success: false, error: err, message: "style error" });
+          return;
+        }
+      });
+      stylesid.push(newstyle._id);
+    }
+    stylesid.push(alreadyExist._id);
   });
   productData.styles = stylesid;
   const newproduct = new productModel(productData);
@@ -22,7 +26,7 @@ router.post("/", async function (req, res) {
     if (err) {
       res.send({ success: false, error: err });
     } else {
-      res.send({ success: true, product: newproduct });
+      res.json({ success: true, product: newproduct });
     }
   });
 });
