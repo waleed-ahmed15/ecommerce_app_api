@@ -15,4 +15,16 @@ router.post("/", async function (req, res) {
   });
 });
 
+//get orders for specific user using user id;
+router.get('/:userid',async function(req,res){
+    const userid=req.params.userid;
+    await OrderModel.find({user:userid}).populate('user').exec(function(err,docs){
+        if(err){
+            res.send({success:false,error:err});
+        }
+        else{
+            res.send({success:true,data:docs});
+        }
+    });
+});
 module.exports = router;
