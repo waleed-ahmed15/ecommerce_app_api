@@ -4,16 +4,24 @@
 const router = require("express").Router();
 const usermodel = require("../models/user_model");
 const bcrpyt = require("bcrypt");
+const jsonwebtoken = require("jsonwebtoken");
 const CartModel = require("../models/cart_model");
 const CartItemModel = require("../models/cart_item_model");
 const uuid = require("uuid");
-const { populate } = require("../models/product_styles_model");
+const productStyleModel = require("../models/product_styles_model");
+const jwtauth = require("../middlewares/jwt");
+
 router.post("/createaccount", async function (req, res) {
   const userData = req.body;
   const password = userData.password;
   const salt = await bcrpyt.genSalt(10);
   const hashedpassword = await bcrpyt.hash(password, salt);
   userData.password = hashedpassword;
+  const token = await jsonwebtoken.sign(
+    { userid: userData.userid },
+    "myseckey343434343"
+  );
+  userData.token = token;
   const newUser = new usermodel(userData);
 
   newUser.save(function (err) {
@@ -39,7 +47,7 @@ router.post("/login", async function (req, res) {
   }
   res.send({ success: true, error: "user found and login successful" });
 });
-router.get("/:userid", async function (req, res) {
+router.get("/:userid",jwtauth, async function (req, res) {
   const userid = req.params.userid;
   const userfound = await usermodel.findOne({ userid: userid });
   if (!userfound) {
@@ -79,7 +87,7 @@ router.put("/", async function (req, res) {
     userData
   );
   if (!result) {
-    res.json({ success: false, error: "no such user found" });
+    res.json({ success: false, error:"no such user found" });
   } else {
     res.json({ success: true, messaage: "user updated successfully" });
   }
