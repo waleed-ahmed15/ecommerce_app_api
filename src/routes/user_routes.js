@@ -140,7 +140,6 @@ router.delete("/:userid/removefromcart", async function (req, res) {
     res.send({ success: true, message: "item removed" });
   }
 });
-module.exports = router;
 
 //update product quantity in cart route
 
@@ -162,3 +161,5 @@ router.post("/:userid/cartitemquantity", async function (req, res) {
       .send({ success: false, message: "failed to updated quantity" });
   }
 });
+
+module.exports = router;

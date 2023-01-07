@@ -30,6 +30,9 @@ mongoose
 
     const fileRoutes = require("./routes/file_routes");
     app.use("/api/fileupload", fileRoutes);
+
+    const orderRoutes = require("./routes/order_routes");
+    app.use("/api/order", orderRoutes);
   });
 
 app.listen(port, function () {
