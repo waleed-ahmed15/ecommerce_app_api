@@ -5,7 +5,7 @@ const orderSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User" },
   items: { type: Array, default: [] },
   addedon: { type: Date, default: Date.now() },
-  oderstatus: { type: Number, default: 0 }, //0 present order place ..1 presents order shipped
+  orderstatus: { type: Number, default: 0 }, //0 present order place ..1 presents order shipped
 });
 const oderModel = model("Order", orderSchema);
 
